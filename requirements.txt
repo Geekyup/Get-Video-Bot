@@ -3,3 +3,4 @@ fastapi
 uvicorn
 yt-dlp
 python-multipart
+python-dotenv
