@@ -17,7 +17,6 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 import uvicorn
 
-
 # ==================== КОНФИГУРАЦИЯ ====================
 load_dotenv() 
 
@@ -27,7 +26,6 @@ WEBAPP_URL = os.getenv("WEBAPP_URL")
 # ==================== AIOGRAM SETUP ====================
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-
 
 # НАСТРОЙКИ С ОПЦИОНАЛЬНЫМ ЛИМИТОМ
 def get_ydl_opts(filename, max_size=None):
@@ -42,7 +40,6 @@ def get_ydl_opts(filename, max_size=None):
         opts['max_filesize'] = max_size
     
     return opts
-
 
 @dp.message(CommandStart())
 async def cmd_start(message: Message):
@@ -65,7 +62,6 @@ async def cmd_start(message: Message):
         parse_mode="HTML",
         reply_markup=builder.as_markup()
     )
-
 
 @dp.message(F.text.regexp(r'https?://'))
 async def download_video(message: Message):
@@ -120,11 +116,9 @@ async def download_video(message: Message):
         if os.path.exists(filename):
             os.remove(filename)
 
-
 @dp.message()
 async def handle_other(message: Message):
     await message.answer("❌ Пожалуйста, отправь ссылку на видео или используй Mini App.")
-
 
 async def start_bot():
     """Запуск бота"""
@@ -132,11 +126,9 @@ async def start_bot():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
-
 # ==================== FASTAPI ====================
 class VideoRequest(BaseModel):
     url: str
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -151,8 +143,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Создаем структуру папок
+os.makedirs("static", exist_ok=True)
+os.makedirs("static/js", exist_ok=True)
+os.makedirs("static/css", exist_ok=True)
+os.makedirs("templates", exist_ok=True)
+
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 async def delete_file_later(filename: str, delay: int):
     """Удаляет файл через заданное время"""
@@ -164,11 +163,9 @@ async def delete_file_later(filename: str, delay: int):
     except Exception as e:
         print(f"❌ Ошибка удаления {filename}: {e}")
 
-
 @app.get("/")
 async def root():
-    return FileResponse("static/index.html")
-
+    return FileResponse("templates/index.html")
 
 @app.post("/api/download")
 async def download_video_api(video: VideoRequest):
@@ -218,7 +215,6 @@ async def download_video_api(video: VideoRequest):
             content={"error": str(e)}
         )
 
-
 @app.get("/api/file/{file_id}")
 async def get_file(file_id: str):
     filename = f"{file_id}.mp4"
@@ -235,15 +231,11 @@ async def get_file(file_id: str):
         filename="video.mp4"
     )
 
-
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "bot": "running", "api": "running"}
 
-
 if __name__ == "__main__":
-    os.makedirs("static", exist_ok=True)
-    
     uvicorn.run(
         app,
         host="0.0.0.0",
