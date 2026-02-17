@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Video Downloader</h1>
+            <p class="subtitle">Скачай видео с YouTube, TikTok, Instagram и других платформ</p>
+        </div>
+
+        <div class="input-section">
+            <input 
+                type="text" 
+                id="videoUrl" 
+                placeholder="Вставь ссылку на видео..."
+                autocomplete="off"
+            >
+            <button id="downloadBtn" onclick="downloadVideo()">
+                <span id="btnText">Скачать</span>
+                <div id="loader" class="loader hidden"></div>
+            </button>
+        </div>
+
+        <div id="status" class="status hidden"></div>
+
+        <div id="result" class="result hidden">
+            <div class="video-info">
+                <h3 id="videoTitle"></h3>
+                <p id="videoSize"></p>
+            </div>
+            
+            <button class="download-btn" onclick="downloadToDevice()">
+                📥 Скачать на телефон
+            </button>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <span class="icon">⚡</span>
+                <span>Быстрая загрузка</span>
+            </div>
+            <div class="feature">
+                <span class="icon">🎯</span>
+                <span>Лучшее качество</span>
+            </div>
+            <div class="feature">
+                <span class="icon">🔒</span>
+                <span>Безопасно</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
