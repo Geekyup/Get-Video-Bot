@@ -141,17 +141,12 @@ async def lifespan(app: FastAPI):
         bot_task.cancel()
         await bot.session.close()
 
-
 app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Создаем структуру папок
-os.makedirs("static", exist_ok=True)
+# ✅ ТОЛЬКО ЭТО ДОБАВЛЕНО - создание твоих папок
 os.makedirs("static/js", exist_ok=True)
 os.makedirs("static/css", exist_ok=True)
-os.makedirs("templates", exist_ok=True)
-
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 async def delete_file_later(filename: str, delay: int):
     """Удаляет файл через заданное время"""
@@ -236,6 +231,8 @@ async def health_check():
     return {"status": "ok", "bot": "running", "api": "running"}
 
 if __name__ == "__main__":
+    os.makedirs("static", exist_ok=True)
+    
     uvicorn.run(
         app,
         host="0.0.0.0",
