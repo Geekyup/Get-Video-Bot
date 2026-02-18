@@ -6,7 +6,7 @@ import yt_dlp
 def get_ydl_opts(filename: str, max_size: Optional[int] = None) -> dict:
     opts = {
         # лучшее видео (до 1080p) + лучшее аудио, иначе лучший muxed формат до 1080p
-        "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
+        "format": "best[height<=1080][ext=mp4]/best[height<=1080]/best",
         "outtmpl": filename,
         "quiet": True,
         "no_warnings": True,
